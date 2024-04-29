@@ -14,16 +14,15 @@ them:
 
 ## Content
 
-- [Option: Maybe monad and functor](https://github.com/aseminjakiw/functionalCsharp#Option)
-- [Result: Either monad and functor](https://github.com/aseminjakiw/functionalCsharp#Result)
-- [Validation: Either monad, functor and applicative](https://github.com/aseminjakiw/functionalCsharp#Validation)
+- [Option: Maybe monad and functor](https://github.com/aseminjakiw/functionalCsharp?tab=readme-ov-file#Option)
+- [Result: Either monad and functor](https://github.com/aseminjakiw/functionalCsharp?tab=readme-ov-file#Result)
+- [Validation: Either monad, functor and applicative](https://github.com/aseminjakiw/functionalCsharp?tab=readme-ov-file#Validation)
 
 ## Option
 
 ``Option<T>`` is used as a type safe replacement for ``null``. 
 Technically it is a maybe monad and functor implemented with 
-Church-encoding. It is analogous to [F# Option](https://fsharpforfunandprofit.com/posts/the-option-type/),
-hence the name.
+Church-encoding. It is analogous to F# Option, hence the name.
 
 Use this type as a complete and better replacement for ``null``, 
 ``Nullable<T>`` or ``T?``. Here some [help for this](https://fsharpforfunandprofit.com/posts/the-option-type/). 
@@ -60,14 +59,15 @@ var userInfo =
 The last example uses C# LINQ syntax to emulate a monadic binding. 
 This is inspired by - [C# language-ext](https://github.com/louthy/language-ext/wiki/Does-C%23-Dream-Of-Electric-Monads%3F). 
 This concept is very powerful but now we are definitely bending 
-the language! If both ``userOption`` and ``settingsOption`` have
-a value, we create a ``UserSettings``. Otherwise, we return None
+the language! How does it work? If both ``userOption`` and ``settingsOption`` have
+a value, we create a ``UserSettings``. Otherwise, we return None.
 
 ## Result
 
 ``Result<TOk,TError>`` is used when you want to either return a result of type A or B.
+This is the reason why this concept is called *Either*.
 Usually you use this when a function either completes with a OK value or 
-produces an error. This is why the type is named ``Result<TOk,TError>``. 
+produces an error. This is why the type is named ``Result<TOk,TError>`` as in F#. 
 Technically it is a either monad and functor implemented with Church-encoding.
 For more infos how to use ``Result<TOk,TError>`` see 
 [Railway-Oriented-Programing](https://fsharpforfunandprofit.com/rop/). 
@@ -103,25 +103,25 @@ var userInfo =
 ```
 
 The last example uses C# LINQ syntax to emulate a monadic binding.
-This is inspired by - [C# language-ext](https://github.com/louthy/language-ext/wiki/Does-C%23-Dream-Of-Electric-Monads%3F).
+This is inspired by - [language-ext: Does C# Dream Of Electric Monads?](https://github.com/louthy/language-ext/wiki/Does-C%23-Dream-Of-Electric-Monads%3F).
 This concept is very powerful but now we are definitely bending
-the language! If both ``userResult`` and ``settingsResult`` are 
+the language! How does it work? If both ``userResult`` and ``settingsResult`` are 
 OK, then we create a ``UserSettings``. Otherwise we stop processing
 at the first error and return it. If you want to aggregate all 
 errors you instead of stopping at the first you need an 
-applicative such as [Validation](https://github.com/aseminjakiw/functionalCsharp#Validation)
+applicative such as [Validation](https://github.com/aseminjakiw/functionalCsharp?tab=readme-ov-file#Validation)
 
 ## Validation
 
-``Validation<TOk,TErro>`` is very similar to [Result<TOk,TError>](https://github.com/aseminjakiw/functionalCsharp#Result). 
+``Validation<TOk,TErro>`` is very similar to [Result<TOk,TError>](https://github.com/aseminjakiw/functionalCsharp?tab=readme-ov-file#Result). 
 Instead of a single error it always handles a collection of errors. 
-It has the same functions as [Result<TOk,TError>](https://github.com/aseminjakiw/functionalCsharp#Result), 
+It has the same functions as [Result<TOk,TError>](https://github.com/aseminjakiw/functionalCsharp?tab=readme-ov-file#Result), 
 take a look there. Additionally it allows switching between stopping
 at the first error (monadic binding) or aggregating all errors and 
-return them at the end (applicative style).
+return them at the end (applicative binding).
 
 If you want to bail out at the first error, just use ``Bind()``
-and LINQ syntax as ``Result<TOk,TError>``. If you want to aggregate 
+and LINQ syntax as with ``Result<TOk,TError>``. If you want to aggregate 
 errors you need to 'switch' to the applicative API. Let's say, you
 have to angles and both must be between 0° and 180°. Then you can 
 create a ``StartStopAngle`` instance containing both angles. You 
@@ -149,9 +149,9 @@ private Validation<Angle, string> IsInRange(float angle) =>
         : $"{angle} is outside the range of 0° zu 180°"; // error result
 ```
 
-The magic happens inside the ``Apply()`` function. It does the following:
+The magic happens inside the ``Apply()`` function. How does it work?
 It unwraps all fields of the input tuple. This only works if all of them 
 are of the Type ``Validation<...,TError>`` where ``TError`` can be any type but
-all field must have the SAME type. If all fields are in OK state, ``Apply()``
-calls the provided function. Otherwise, it will combine alle the errors
-and returns them.
+all field must have the SAME type. The compiler will complain otherwise. If 
+all fields are in OK state, ``Apply()`` calls the provided function. 
+Otherwise, it will combine alle the errors and returns them.
